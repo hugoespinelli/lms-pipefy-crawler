@@ -24,7 +24,7 @@ COPY . /lms-scrapper
 WORKDIR /lms-scrapper
 
 RUN pip install pipenv
-RUN pipenv install
+RUN pipenv install --system
 
-CMD ["pipenv", "run", "python", "-u", "app.py"]
+CMD ["python", "-u", "app.py"]
 

@@ -1,7 +1,13 @@
+from os import getenv
+from dotenv import load_dotenv
+
 from flask import Flask
 from waitress import serve
 
+load_dotenv()
+
 import search_exam_users
+
 
 app = Flask(__name__)
 
@@ -15,6 +21,6 @@ def hello_world():
 
 
 if __name__ == "__main__":
-    port = 80
+    port = getenv("PORT")
     print(f"Rodando servidor na porta {port}")
     serve(app, host='0.0.0.0', port=port)
