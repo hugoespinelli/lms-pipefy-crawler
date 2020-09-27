@@ -20,6 +20,8 @@ class ExaminationAdapter:
             if examination_id != "":
                 examinations_ids.append(examination_id)
 
+        return examinations_ids
+
     @staticmethod
     def extract_examination(row_data):
         record_fields = row_data["record_fields"]
