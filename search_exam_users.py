@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from os import getenv
+from os import getenv, remove, path
 
 load_dotenv()
 
@@ -14,6 +14,7 @@ from utils import get_excel_sheet_path
 
 TABLE_ID = getenv("TABLE_PIPEFY_ID")
 CULTURE_FIT_ID = getenv("CULTURE_FIT_EXAM_ID")
+SCRIPT_PATH = getenv("SCRIPT_PATH")
 
 PHASES_TO_CHECK = [
     "F2: Início da jornada",
@@ -55,6 +56,10 @@ def run():
         print(f"Movendo {len(cards_ids)} para a fase de {PHASE_TO_MOVE}")
         PipefyService.move_cards_ids_to_phase(pipe_id, cards_ids, PHASE_TO_MOVE)
 
+    path_excel = path.join(SCRIPT_PATH, excel_file)
+    remove(path_excel)
+
+    crawler.end()
     print("Finalizando procura de avaliacao de candidatos.")
 
     return True
