@@ -15,5 +15,6 @@ class ExaminationAdapter:
     @staticmethod
     def extract_examination(row_data):
         record_fields = row_data["record_fields"]
-        return list(filter(lambda record: record["name"] == EXAMINATION_FIELD, record_fields))[0]["value"]
+        examination_ids = list(filter(lambda record: record["name"] == EXAMINATION_FIELD, record_fields))[0]["value"]
+        return examination_ids if "" not in examination_ids else []
 
