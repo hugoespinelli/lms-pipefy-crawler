@@ -49,16 +49,16 @@ class CrawlerLMS:
         input_password.send_keys(Keys.RETURN)
         self.driver.implicitly_wait(20)
 
-    def find_users(self, users, examination_id):
-        self.get_in_user_page(examination_id)
-        return [self.find_user(user, examination_id) for user in users]
+    def find_users(self, users, exam):
+        self.get_in_user_page(exam.id)
+        return [self.find_user(user, exam) for user in users]
 
     def get_in_user_page(self, examination_id):
         self._log(f"Entrando na pagina da avaliacao de id {examination_id}")
         url = EASY_LMS_PROVAS.format(examination=examination_id)
         self.driver.get(url)
 
-    def find_user(self, user, examination_id):
+    def find_user(self, user, exam):
         self._log(f"Procurando usuario {user.email}")
         participant_input_filter = self.driver.find_element_by_name("Result[participantFilter]")
         participant_input_filter.clear()
@@ -75,7 +75,8 @@ class CrawlerLMS:
 
         if not self.is_user_found(tr) or not self.is_user_found_matched_with_username(user.email):
             self._log(f"Avaliacao não encontrada!")
-            user.add_examination(Examination(examination_id, 0))
+            exam.score = 0
+            user.add_examination(exam)
             return user
 
         tds = tr.find_elements_by_tag_name('td')
@@ -84,7 +85,9 @@ class CrawlerLMS:
 
             if percentage is not None:
                 self._log(f"Avaliacao encontrada! Percentual: {percentage}!")
-                user.add_examination(Examination(examination_id, percentage, is_completed=True))
+                exam.score = percentage
+                exam.is_completed = True
+                user.add_examination(exam)
                 break
 
         return user

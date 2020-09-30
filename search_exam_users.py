@@ -4,10 +4,11 @@ from os import getenv, remove, path
 load_dotenv()
 
 from crawlers.crawler_lms import CrawlerLMS
+from models.examination import Examination
 from services.pipefy_service import PipefyService
+from services.excel_service import ExcelService
 from adapters.user_adapter import UserAdapter
 from adapters.examination_adapter import ExaminationAdapter
-from services.excel_service import ExcelService
 
 from utils import get_excel_sheet_path
 
@@ -46,10 +47,10 @@ def run():
     print(f"Baixada planilha {excel_file}")
     excel_service = ExcelService(excel_file)
 
-    for pipe_id, exams_ids in pipes.items():
+    for pipe_id, exams in pipes.items():
         print(f"Pegando informacoes de candidato do pipe {pipe_id}...")
-        add_culture_fit_exam(exams_ids)
-        users = get_users_exams(pipe_id, exams_ids, crawler)
+        add_culture_fit_exam(exams)
+        users = get_users_exams(pipe_id, exams, crawler)
         excel_service.fill_completed_users_exams(users)
 
         cards_ids = list(map(lambda u: u.card_id, users))
@@ -65,17 +66,17 @@ def run():
     return True
 
 
-def add_culture_fit_exam(exams_ids):
-    return exams_ids.append(CULTURE_FIT_ID)
+def add_culture_fit_exam(exams):
+    return exams.append(Examination(CULTURE_FIT_ID, min_score=70))
 
 
-def get_users_exams(pipe_id, exams_ids, crawler):
+def get_users_exams(pipe_id, exams, crawler):
 
     users = UserAdapter.transform_response_to_user(PipefyService.get_candidates_from_pipe(pipe_id))
     users = filter_user_by_phase_name(users)
 
-    for exam_id in exams_ids:
-        crawler.find_users(users, exam_id)
+    for exam in exams:
+        crawler.find_users(users, exam)
         print(f"Filtrando {len(users)} candidatos não completaram exames...")
         users = filter_completed_user_exams(users)
         print(f"{len(users)} restantes!")
