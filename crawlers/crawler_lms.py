@@ -57,6 +57,8 @@ class CrawlerLMS:
         self._log(f"Entrando na pagina da avaliacao de id {examination_id}")
         url = EASY_LMS_PROVAS.format(examination=examination_id)
         self.driver.get(url)
+        self.driver.implicitly_wait(15)
+        time.sleep(15)
 
     def find_user(self, user, exam):
         self._log(f"Procurando usuario {user.email}")
@@ -65,8 +67,8 @@ class CrawlerLMS:
         participant_input_filter.send_keys(user.email)
         participant_input_filter.send_keys(Keys.RETURN)
 
-        self.driver.implicitly_wait(14)
-        time.sleep(14)
+        self.driver.implicitly_wait(8)
+        time.sleep(8)
 
         users_table_body = self.driver.find_element_by_xpath('//*[@id="w0"]/table/tbody')
         trs = users_table_body.find_elements_by_tag_name('tr')
