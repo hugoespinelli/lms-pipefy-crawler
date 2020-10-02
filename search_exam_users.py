@@ -53,6 +53,7 @@ def run():
         users = get_users_exams(pipe_id, exams, crawler)
         excel_service.fill_completed_users_exams(users)
 
+        users = filter_completed_user_exams(users)
         cards_ids = list(map(lambda u: u.card_id, users))
         print(f"Movendo {len(cards_ids)} para a fase de {PHASE_TO_MOVE}")
         PipefyService.move_cards_ids_to_phase(pipe_id, cards_ids, PHASE_TO_MOVE)
