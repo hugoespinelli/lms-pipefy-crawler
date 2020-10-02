@@ -67,8 +67,8 @@ class CrawlerLMS:
         participant_input_filter.send_keys(user.email)
         participant_input_filter.send_keys(Keys.RETURN)
 
-        self.driver.implicitly_wait(8)
-        time.sleep(8)
+        self.driver.implicitly_wait(15)
+        time.sleep(15)
 
         users_table_body = self.driver.find_element_by_xpath('//*[@id="w0"]/table/tbody')
         trs = users_table_body.find_elements_by_tag_name('tr')
