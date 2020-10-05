@@ -9,6 +9,8 @@ class Examination:
         self.is_completed = is_completed
 
     def is_approved(self):
+        if self.score == 0:
+            return False
         return self.score >= self.min_score and self.is_completed
 
     def __repr__(self):
