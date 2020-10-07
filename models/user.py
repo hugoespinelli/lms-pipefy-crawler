@@ -15,4 +15,4 @@ class User:
         return all(map(lambda exam: exam.is_approved(), self.examinations))
 
     def __repr__(self):
-        return f"<User email={self.email} card_id={self.card_id} is_approved={self.is_approved()}>"
+        return f"<User email={self.email} card_id={self.card_id} is_approved={self.is_approved()} exams={self.examinations}>"

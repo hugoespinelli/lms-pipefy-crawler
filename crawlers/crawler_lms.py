@@ -78,7 +78,7 @@ class CrawlerLMS:
         if not self.is_user_found(tr) or not self.is_user_found_matched_with_username(user.email):
             self._log(f"Avaliacao não encontrada!")
             exam.score = 0
-            user.add_examination(exam)
+            user.add_examination(Examination(id=exam.id, score=0, min_score=exam.min_score))
             return user
 
         tds = tr.find_elements_by_tag_name('td')
@@ -87,9 +87,10 @@ class CrawlerLMS:
 
             if percentage is not None:
                 self._log(f"Avaliacao encontrada! Percentual: {percentage}!")
-                exam.score = percentage
-                exam.is_completed = True
-                user.add_examination(exam)
+                user.add_examination(Examination(id=exam.id,
+                                                 score=percentage,
+                                                 is_completed=True,
+                                                 min_score=exam.min_score))
                 break
 
         return user
