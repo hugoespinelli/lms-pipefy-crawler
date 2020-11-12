@@ -7,13 +7,13 @@ load_dotenv()
 
 SERVER_PIPEFY_API_URL = getenv("SERVER_PIPEFY_API_URL")
 
-DELAY_PIPEFY_API_TOO_MUCH_REQUESTS = 300  # In seconds
-
+DELAY_PIPEFY_API_TOO_MUCH_REQUESTS = 60  # In seconds
+RETRIES = 50
 
 class PipefyService:
 
     def __init__(self):
-        self.session = retry(Session(), retries=3, backoff_factor=DELAY_PIPEFY_API_TOO_MUCH_REQUESTS)
+        self.session = retry(Session(), retries=RETRIES, backoff_factor=DELAY_PIPEFY_API_TOO_MUCH_REQUESTS)
 
     def get_pipe_examination(self, table_id):
         response = self.session.get(f"{SERVER_PIPEFY_API_URL}/table/{table_id}")
