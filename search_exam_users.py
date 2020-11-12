@@ -32,7 +32,9 @@ def run():
 
     print("Iniciando procura de avaliacao de candidatos...")
 
-    pipes = ExaminationAdapter.group_examinations_in_pipes_ids(PipefyService.get_pipe_examination(TABLE_ID))
+    pipefy_service = PipefyService()
+
+    pipes = ExaminationAdapter.group_examinations_in_pipes_ids(pipefy_service.get_pipe_examination(TABLE_ID))
 
     crawler = CrawlerLMS(logger=True)
 
@@ -50,13 +52,13 @@ def run():
     for pipe_id, exams in pipes.items():
         print(f"Pegando informacoes de candidato do pipe {pipe_id}...")
         add_culture_fit_exam(exams)
-        users = get_users_exams(pipe_id, exams, crawler)
+        users = get_users_exams(pipe_id, exams, crawler, pipefy_service)
         excel_service.fill_completed_users_exams(users)
 
         users = filter_completed_user_exams(users)
         cards_ids = list(map(lambda u: u.card_id, users))
         print(f"Movendo {len(cards_ids)} para a fase de {PHASE_TO_MOVE}")
-        PipefyService.move_cards_ids_to_phase(pipe_id, cards_ids, PHASE_TO_MOVE)
+        pipefy_service.move_cards_ids_to_phase(pipe_id, cards_ids, PHASE_TO_MOVE)
 
     path_excel = path.join(SCRIPT_PATH, excel_file)
     remove(path_excel)
@@ -71,9 +73,9 @@ def add_culture_fit_exam(exams):
     return exams.append(Examination(CULTURE_FIT_ID, min_score=70))
 
 
-def get_users_exams(pipe_id, exams, crawler):
+def get_users_exams(pipe_id, exams, crawler, pipefy_service):
 
-    users = UserAdapter.transform_response_to_user(PipefyService.get_candidates_from_pipe(pipe_id))
+    users = UserAdapter.transform_response_to_user(pipefy_service.get_candidates_from_pipe(pipe_id))
     users = filter_user_by_phase_name(users)
 
     for exam in exams:

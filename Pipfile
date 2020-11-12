@@ -13,6 +13,7 @@ python-dotenv = "*"
 openpyxl = "*"
 flask = "*"
 waitress = "*"
+retry-requests = "*"
 
 [requires]
 python_version = "3.7"
