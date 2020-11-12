@@ -13,7 +13,10 @@ RETRIES = 50
 class PipefyService:
 
     def __init__(self):
-        self.session = retry(Session(), retries=RETRIES, backoff_factor=DELAY_PIPEFY_API_TOO_MUCH_REQUESTS)
+        self.session = retry(Session(),
+                             retries=RETRIES,
+                             backoff_factor=DELAY_PIPEFY_API_TOO_MUCH_REQUESTS,
+                             status_to_retry=(429, 408, 504, 503, 500))
 
     def get_pipe_examination(self, table_id):
         response = self.session.get(f"{SERVER_PIPEFY_API_URL}/table/{table_id}")
